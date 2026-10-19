@@ -196,6 +196,17 @@ class PlatformTests(unittest.TestCase):
         self.assertEqual(post['published_at'],'2026-10-18T23:00:00+00:00')
         self.assertEqual(self.get('/posts?start=2026-10-19').json()['summary']['total'],0)
 
+    def test_additional_connectors_are_scoped_disabled_and_queued(self):
+        self.assertEqual(self.write('/connectors/mastodon',{'query':'opensource'}).status_code,409)
+        with patch.dict(os.environ,{'ENABLE_MASTODON':'1'}):
+            job=self.write('/connectors/mastodon',{'query':'opensource'}).json()['id']
+            with patch('app.connectors.mastodon',return_value=[{'text':'A wonderful helpful application','source':'Mastodon','url':'https://mastodon.social/@test/123','remote_id':'123'}]):
+                run_job(self.app.state.factory,job)
+        post=self.get('/posts').json()['posts'][0]
+        self.assertEqual(post['remote_id'],'123')
+        self.assertTrue(post['url'].startswith('https://mastodon.social/'))
+        self.assertEqual(self.write('/connectors/unknown',{'query':'test'}).status_code,404)
+
 
 if __name__ == '__main__':
     unittest.main()

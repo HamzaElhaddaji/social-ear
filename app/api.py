@@ -412,7 +412,23 @@ def create_app(url=None, start_worker=True):
     def connectors(workspace: str, request: Request):
         with factory() as db:
             access(request, db, workspace)
-        return {'bluesky': os.environ.get('ENABLE_BLUESKY') == '1', 'csv': True}
+        return {'bluesky': os.environ.get('ENABLE_BLUESKY') == '1', 'csv': True,
+                'mastodon':os.environ.get('ENABLE_MASTODON')=='1',
+                'youtube':os.environ.get('ENABLE_YOUTUBE')=='1' and bool(os.environ.get('YOUTUBE_API_KEY'))}
+
+    @app.post('/api/w/{workspace}/connectors/{provider}', status_code=202)
+    def collect_additional(workspace: str, provider: str, body: ConnectorInput, request: Request):
+        if provider not in ('mastodon','youtube'):
+            # Bluesky is handled below by the compatibility route.
+            if provider=='bluesky':return collect(workspace,body,request)
+            raise HTTPException(404,'Unknown connector.')
+        if os.environ.get('ENABLE_'+provider.upper())!='1' or (provider=='youtube' and not os.environ.get('YOUTUBE_API_KEY')):
+            raise HTTPException(409,'This connector is not enabled or its server credentials are missing.')
+        with factory.begin() as db:
+            access(request,db,workspace,True)
+            if not limiter.allow('collection:'+workspace,limit=5,window=300):raise HTTPException(429,'Collection limit reached. Try again in five minutes.')
+            job=Job(workspace_id=workspace,kind=provider,payload=body.model_dump());db.add(job);db.flush()
+            return {'id':job.id}
 
     @app.post('/api/w/{workspace}/connectors/bluesky', status_code=202)
     def collect(workspace: str, body: ConnectorInput, request: Request):

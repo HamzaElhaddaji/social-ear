@@ -30,7 +30,7 @@ The app does not incur an AI API bill; language detection, VADER sentiment, and 
 
 ## Public social collection
 
-Set `ENABLE_BLUESKY=1` to expose the manual Bluesky collector. The connector sends the user-entered search query to the fixed public Bluesky search endpoint. It does not send imported conversations. Search is capped at 100 latest posts with up to three transient-error retries; access may depend on provider policy. No provider request is made when disabled. This connector has automated mocked coverage; live provider availability must be checked in your environment. No other social network integration is claimed.
+Set `ENABLE_BLUESKY=1` to expose the manual Bluesky collector. Search is capped at 100 latest posts. Optional Mastodon hashtag collection and YouTube video comments are also implemented; see [connector configuration](SOCIAL_CONNECTORS.md). Each source is disabled by default and depends on provider availability, permissions and credentials. No provider request is made while disabled. Imported conversation data is not sent to the social providers.
 
 ## Jobs, schedules and recovery
 
@@ -51,4 +51,4 @@ python -m unittest discover -s tests -v
 node --check web/app.js
 ```
 
-Tests cover authentication, workspace isolation, CSRF, role enforcement, atomic imports, duplicates, filters, review, alerts, scheduling, report evidence, and mocked collection. Production hosting, live Bluesky access, and browser visual QA require their respective running environments. Complete a deployment-specific review before storing sensitive customer data. Password recovery, retention/deletion workflows, billing, and multilingual transformer inference are not implemented.
+Tests cover authentication, workspace isolation, CSRF, role enforcement, atomic imports, duplicates, filters, review, alerts, scheduling, report evidence, and mocked collection/generation. Optional [multilingual inference](MULTILINGUAL.md) has real CPU smoke tests when its model is installed. Live generation requires Ollama and live YouTube collection requires a valid API key. Password recovery, retention/deletion workflows and billing are not implemented.

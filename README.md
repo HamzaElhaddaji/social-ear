@@ -28,7 +28,7 @@ For a populated local demo, run `.venv/Scripts/python -m app.demo`. It creates o
 - Human sentiment corrections, issue assignment, investigation status, team notes and audit history
 - Rolling 24-hour keyword/threshold monitors, deduplicated in-app alerts and acknowledgement
 - Saved JSON reports and recurring report schedules
-- Optional manual Bluesky public-search collection, disabled by default
+- Optional manual Bluesky search, Mastodon hashtag collection and YouTube video comments, disabled by default
 - SQLite locally, PostgreSQL configuration, non-root Docker image and Compose package
 - Integration tests and GitHub Actions jobs for SQLite, PostgreSQL and JavaScript syntax
 
@@ -46,7 +46,7 @@ Open http://localhost:8000. See [deployment instructions](docs/DEPLOYMENT.md) fo
 
 Sentiment defaults to VADER plus explicit English domain rules. An optional, pinned local ONNX transformer supports eight languages; see [multilingual setup](docs/MULTILINGUAL.md). Unsupported languages remain unclassified. Very short posts may have undetermined language. Scores are estimates, not calibrated confidence. Aspect and intent labels remain heuristic. Topic clusters are statistical and may change with filters.
 
-The assistant defaults to extractive research. Optional [local generative research](docs/GENERATIVE_RESEARCH.md) uses Ollama with structured claims and validated citation IDs; it requires a separately running local model service. Citation validation does not prove claims are true. No cloud AI service is used. Bluesky collection has mocked test coverage and depends on provider availability; Instagram, X, Facebook and Reddit integrations are not included.
+The assistant defaults to extractive research. Optional [local generative research](docs/GENERATIVE_RESEARCH.md) uses Ollama with structured claims and validated citation IDs; it requires a separately running local model service. Citation validation does not prove claims are true. No cloud AI service is used. [Social connectors](docs/SOCIAL_CONNECTORS.md) have mocked coverage and require provider access; YouTube requires a server API key. Instagram, X, Facebook and Reddit integrations are not included.
 
 ## Verification
 
@@ -65,7 +65,7 @@ Install dependencies first. Set `TEST_DATABASE_URL` to a dedicated PostgreSQL da
 | `app/database.py` | SQLAlchemy tables and database session factory |
 | `app/service.py` | Ingestion, durable jobs, schedules, alerts, reports |
 | `app/intelligence.py` | Local analysis, topic clustering, research retrieval |
-| `app/connectors.py` | Optional fixed-endpoint Bluesky collector |
+| `app/connectors.py` | Optional fixed-endpoint Bluesky, Mastodon and YouTube collectors |
 | `web/` | Responsive interface with no frontend build step |
 | `tests/` | Original regression tests and platform integration coverage |
 

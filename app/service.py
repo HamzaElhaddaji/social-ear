@@ -5,6 +5,7 @@ import json
 import time
 import logging
 from datetime import datetime, timezone, timedelta
+from urllib.parse import urlsplit
 from sqlalchemy import select
 from .database import Record, Job, now
 from .intelligence import analyze, overview
@@ -56,10 +57,14 @@ def add_posts(db, workspace, rows):
             duplicates += 1
             continue
         if len(existing) >= MAX_POSTS:
-            raise ValueError('Workspace limit is 5,000 conversations. Export and archive data before adding more.')
+            raise ValueError('Workspace limit is 5,000 conversations. Create a new workspace for another dataset.')
         existing.add(identity)
+        url=str(row.get('url') or '')[:2000]
+        parsed_url=urlsplit(url)
+        if parsed_url.scheme not in ('http','https') or not parsed_url.hostname or parsed_url.username or parsed_url.password:url=''
         db.add(Record(workspace_id=workspace, kind='post', external_id=identity,
                       payload={'text': text, 'source': source, 'published_at': date, **analyze(text),
+                               'url':url, 'remote_id':str(row.get('remote_id') or '')[:200],
                                'assignee': '', 'status': 'open', 'notes': []}))
         added += 1
     db.flush()
@@ -123,6 +128,11 @@ def run_job(factory, job_id):
                 from .connectors import bluesky
                 result = add_posts(db, job.workspace_id, bluesky(job.payload['query']))
                 result['alerts'] = evaluate_monitors(db, job.workspace_id)
+            elif job.kind in ('mastodon','youtube'):
+                from .connectors import mastodon, youtube
+                connector=mastodon if job.kind=='mastodon' else youtube
+                result=add_posts(db,job.workspace_id,connector(job.payload['query']))
+                result['alerts']=evaluate_monitors(db,job.workspace_id)
             elif job.kind == 'reanalyze':
                 updated = 0
                 for record in records(db, job.workspace_id, 'post'):

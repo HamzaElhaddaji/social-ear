@@ -47,6 +47,7 @@ async function load() {
 function postCard(post) {
   const card = el('article','','post'); card.id = 'post-'+post.id; const meta = el('div','','post-meta');
   meta.append(el('strong',post.source),el('span',post.published_at || 'No date supplied'),el('span',post.language),el('span',post.sentiment+(post.reviewed?' · reviewed':''),'badge '+post.sentiment)); card.append(meta,el('p',post.text));
+  if(post.url){const link=el('a','View original post ↗');link.href=post.url;link.target='_blank';link.rel='noopener noreferrer';card.append(link);}
   const detail = el('div','','post-meta'); detail.append(el('span',post.intent+' · '+post.status),el('span',post.assignee || 'Unassigned')); Object.entries(post.aspects || {}).forEach(([k,v]) => detail.append(el('span',k+': '+v)));
   if (canWrite()) {const b = el('button','Review / assign','secondary'); b.addEventListener('click',() => openReview(post)); detail.append(b);} card.append(detail); return card;
 }
@@ -69,7 +70,7 @@ async function refreshJobs() {
   if (jobStates && jobStates!==state) await Promise.all([load(),activity()]); jobStates=state;
 }
 async function loadMembers() {const selected=workspace, data=await api(base()+'/members'); if(selected!==workspace)return; members=data; $('members').replaceChildren(...members.map(m=>el('p',m.email+' · '+m.role,'audit-row')));}
-async function loadConnectors() {const selected=workspace, data=await api(base()+'/connectors'); if(selected!==workspace)return; $('connector-status').textContent=data.bluesky?'Public search enabled.':'Disabled. An administrator can enable Bluesky in server configuration.'; $('connector-form').hidden=!data.bluesky || !canWrite();}
+async function loadConnectors() {const selected=workspace, data=await api(base()+'/connectors'); if(selected!==workspace)return; $('connector-status').textContent=data.bluesky?'Public search enabled.':'Disabled. An administrator can enable Bluesky in server configuration.'; $('connector-form').hidden=!data.bluesky || !canWrite();$('additional-status').textContent='Mastodon: '+(data.mastodon?'enabled':'disabled')+' · YouTube: '+(data.youtube?'enabled':'disabled / API key needed');$('mastodon-form').hidden=!data.mastodon||!canWrite();$('youtube-form').hidden=!data.youtube||!canWrite();}
 function openReview(post) {
   activePost=post; $('review-text').textContent=post.text; $('review-sentiment').value=post.sentiment; $('review-status').value=post.status;
   const empty=el('option','Unassigned'); empty.value=''; $('review-assignee').replaceChildren(empty,...members.map(m=>{const o=el('option',m.email);o.value=m.email;return o;})); $('review-assignee').value=post.assignee; $('review-note').value=''; $('review-error').textContent='';
@@ -90,6 +91,7 @@ $('reanalyze').addEventListener('click',action(async()=>{await api(base()+'/rean
 $('competitor-form').addEventListener('submit',action(async()=>{await api(base()+'/competitors',{method:'POST',json:{name:$('competitor-name').value,keyword:$('competitor-keyword').value}});message('Comparison saved.');await activity();}));
 $('schedule-form').addEventListener('submit',action(async()=>{await api(base()+'/report-schedule',{method:'POST',json:{interval_hours:Number($('schedule-hours').value),enabled:$('schedule-enabled').checked}});message('Report schedule saved.');await activity();}));
 $('connector-form').addEventListener('submit',action(async()=>{await api(base()+'/connectors/bluesky',{method:'POST',json:{query:$('connector-query').value}});message('Collection queued.');await refreshJobs();}));
+for(const provider of ['mastodon','youtube']){$(provider+'-form').addEventListener('submit',action(async()=>{await api(base()+'/connectors/'+provider,{method:'POST',json:{query:$(provider+'-query').value}});message(provider+' collection queued.');await refreshJobs();}));}
 $('workspace-form').addEventListener('submit',action(async()=>{const r=await api('/api/workspaces',{method:'POST',json:{name:$('workspace-name').value}});workspace=r.id;await initialize();}));
 $('member-form').addEventListener('submit',action(async()=>{await api(base()+'/members',{method:'POST',json:{email:$('member-email').value,role:$('member-role').value}});message('Team membership saved.');await loadMembers();}));
 $('close-review').addEventListener('click',()=>$('review-dialog').close());
