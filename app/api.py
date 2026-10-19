@@ -194,7 +194,8 @@ def create_app(url=None, start_worker=True):
             user, session = identity(request, db)
             memberships = list(db.scalars(select(Membership).where(Membership.user_id == user.id)))
             from .sentiment_model import status
-            return {'name': user.name, 'email': user.email, 'csrf': session.csrf, 'analysis': status(),
+            from .research import configuration
+            return {'name': user.name, 'email': user.email, 'csrf': session.csrf, 'analysis': status(), 'research': configuration(),
                     'workspaces': [{'id': m.workspace_id, 'name': db.get(Workspace, m.workspace_id).name, 'role': m.role} for m in memberships]}
 
     @app.post('/api/auth/logout')
@@ -399,7 +400,13 @@ def create_app(url=None, start_worker=True):
     def assistant(workspace: str, body: Question, request: Request):
         with factory() as db:
             access(request, db, workspace)
-            return research(body.question, posts(db, workspace))
+            if not limiter.allow('research:'+workspace, limit=10, window=60):
+                raise HTTPException(429, 'Research limit reached. Try again in a minute.')
+            from .research import answer, GenerationUnavailable
+            try:
+                return answer(body.question, posts(db, workspace))
+            except GenerationUnavailable as error:
+                raise HTTPException(503, str(error))
 
     @app.get('/api/w/{workspace}/connectors')
     def connectors(workspace: str, request: Request):

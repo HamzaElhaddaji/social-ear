@@ -14,6 +14,9 @@ services:
       ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-1}
       ENABLE_BLUESKY: ${ENABLE_BLUESKY:-0}
       SENTIMENT_PROVIDER: ${SENTIMENT_PROVIDER:-baseline}
+      RESEARCH_PROVIDER: ${RESEARCH_PROVIDER:-extractive}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:1.5b}
+      OLLAMA_URL: http://host.docker.internal:11434
     volumes:
       - ./data/models:/srv/social-ear/data/models:ro
     depends_on:

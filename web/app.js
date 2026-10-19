@@ -20,6 +20,7 @@ function showAuth() {$('auth').hidden = false; $('application').hidden = true; c
 async function initialize() {
   const me = await api('/api/me'); csrf = me.csrf; $('auth').hidden = true; $('application').hidden = false; $('user-name').textContent = me.name;
   $('analysis-status').textContent=me.analysis.description+' · Statistical topics · Human review. Existing records retain their original model until reanalyzed.';
+  $('research-status').textContent=me.research.provider==='ollama'?'Local generative research with '+me.research.model+'. Answers cite retrieved posts. Check every claim against its evidence.':'Local extractive research: retrieves relevant posts and summarizes their sentiment. No generated explanations.';
   $('workspace').replaceChildren(...me.workspaces.map(w => {const o = el('option', w.name); o.value = w.id; o.dataset.role = w.role; return o;}));
   if (me.workspaces.some(w => w.id === workspace)) $('workspace').value = workspace;
   await changeWorkspace(); clearInterval(poll);
@@ -82,7 +83,7 @@ $('filters').addEventListener('reset',()=>setTimeout(action(async()=>{page=1;awa
 $('previous').addEventListener('click',action(async()=>{if(page>1)page--;await load();}));
 $('next').addEventListener('click',action(async()=>{if(page*25<total)page++;await load();}));
 $('upload').addEventListener('submit',action(async()=>{const f=$('file').files[0];if(!f)return;if(f.size>2*1024*1024)throw new Error('Choose a CSV smaller than 2 MB.');await api(base()+'/import',{method:'POST',headers:{'Content-Type':'text/csv'},body:await f.text()});message('Import queued. Check processing history for results.');$('file').value='';await refreshJobs();}));
-$('ask-form').addEventListener('submit',action(async()=>{const selected=workspace;$('answer').textContent='Finding evidence…';const r=await api(base()+'/research',{method:'POST',json:{question:$('question').value}});if(selected!==workspace)return;$('answer').replaceChildren(el('p',r.answer),...r.citations.map(c=>{const n=el('blockquote');n.append(el('p',c.text),el('small',c.source+' · evidence '+c.id));return n;}));}));
+$('ask-form').addEventListener('submit',action(async()=>{const selected=workspace;$('answer').textContent='Finding evidence…';try{const r=await api(base()+'/research',{method:'POST',json:{question:$('question').value}});if(selected!==workspace)return;$('answer').replaceChildren(el('p',r.answer),el('small',r.notice || r.method),...r.citations.map(c=>{const n=el('blockquote');n.append(el('p',c.text),el('small',c.source+' · evidence '+c.id));return n;}));}catch(error){$('answer').textContent=error.message;throw error;}}));
 $('monitor-form').addEventListener('submit',action(async()=>{await api(base()+'/monitors',{method:'POST',json:{name:$('monitor-name').value,keyword:$('keyword').value,threshold:Number($('threshold').value),sentiment:$('monitor-sentiment').value}});message('Monitor saved.');await activity();}));
 $('create-report').addEventListener('click',action(async()=>{await api(base()+'/reports',{method:'POST'});message('Report queued.');await refreshJobs();}));
 $('reanalyze').addEventListener('click',action(async()=>{await api(base()+'/reanalyze',{method:'POST'});message('Reanalysis queued. Human-reviewed sentiments are preserved.');await refreshJobs();}));

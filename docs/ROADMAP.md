@@ -15,7 +15,7 @@ The automated suite covers authentication/session logout, CSRF and host/origin c
 1. Multilingual transformer inference is implemented as an optional pinned local ONNX backend, with real inference smoke tests across five languages. Representative evaluation datasets, semantic embeddings and calibrated confidence remain future work.
 2. Provider-approved integrations for additional social platforms, incremental synchronization and deletion propagation.
 3. Statistical anomaly/crisis detection, with historical precision/recall validation; existing alerts are explicit count thresholds.
-4. Generative research with verified evidence citations; the current assistant is extractive.
+4. Local generative research integration is implemented through Ollama, with structured-output and citation-ID validation tests. Live generation requires a separately installed local service/model. Semantic claim verification remains a research problem; citation IDs alone do not establish truth.
 5. Password recovery, SSO, retention/deletion administration, schema migration tooling and stronger production administration.
 6. Distributed workers/rate limiting, scalable analytical queries and dataset capacities beyond 5,000 posts.
 7. Optional billing, email notifications and public hosting if requested later.

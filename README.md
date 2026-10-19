@@ -46,7 +46,7 @@ Open http://localhost:8000. See [deployment instructions](docs/DEPLOYMENT.md) fo
 
 Sentiment defaults to VADER plus explicit English domain rules. An optional, pinned local ONNX transformer supports eight languages; see [multilingual setup](docs/MULTILINGUAL.md). Unsupported languages remain unclassified. Very short posts may have undetermined language. Scores are estimates, not calibrated confidence. Aspect and intent labels remain heuristic. Topic clusters are statistical and may change with filters.
 
-The assistant retrieves related posts and computes a sentiment summary. It is not a generative chatbot and does not infer causes beyond the evidence. External AI services are not used. Bluesky collection has mocked test coverage and depends on provider availability; Instagram, X, Facebook and Reddit integrations are not included.
+The assistant defaults to extractive research. Optional [local generative research](docs/GENERATIVE_RESEARCH.md) uses Ollama with structured claims and validated citation IDs; it requires a separately running local model service. Citation validation does not prove claims are true. No cloud AI service is used. Bluesky collection has mocked test coverage and depends on provider availability; Instagram, X, Facebook and Reddit integrations are not included.
 
 ## Verification
 
