@@ -1,21 +1,23 @@
-# Roadmap
+# Release status
 
-## 1. Working foundation (this release)
-CSV import, persistent posts, evidence search, baseline sentiment, dashboard, export, automated tests.
+## Implemented: local intelligence workspace
 
-## 2. Production application foundation
-Adopt a typed React/Next.js frontend and FastAPI service; migrate storage to PostgreSQL with migrations. Add accounts, organizations, roles, tenant isolation, pagination, structured logging, backups, deployment and integration tests. Keep the current prototype as a behavior reference, not a production server.
+Accounts and workspace roles; atomic queued CSV ingestion; local English sentiment; language detection; heuristic aspect/intent labels; statistical topic discovery; timeline and source dashboards; keyword brand comparisons; filtering and export; evidence research; human review and assignments; keyword alerts; saved and recurring reports; optional manual Bluesky collector; SQLite/PostgreSQL database support; Docker package and automated tests.
 
-## 3. Evaluated intelligence
-Introduce a provider interface and background job queue. Add language detection, evaluated multilingual sentiment, aspect sentiment and semantic topic clustering. Maintain a labeled evaluation dataset and report performance by language. AI summaries must cite source records; store model/version metadata and allow human correction. Require explicit configuration for external AI processing.
+The interface deliberately uses ordinary browser JavaScript instead of adding a React build pipeline. The API uses FastAPI and SQLAlchemy. PostgreSQL and SQLite share the same application code. The queue and scheduler are durable database records processed by one application worker.
 
-## 4. Social listening
-Verify platform API access, permissions, quotas and retention rules before selecting integrations. Add connectors incrementally, incremental ingestion, retries, rate-limit handling, provenance and deletion propagation. Keep CSV available.
+## Validation
 
-## 5. Monitoring and teamwork
-Saved keyword monitors, time-series analysis, volume anomaly detection, alert deduplication, competitor comparisons, assignments and investigation history. Validate alerts on historical datasets before enabling notifications.
+The automated suite covers authentication/session logout, CSRF and host/origin controls, workspace isolation, roles, atomic import failure, deduplication, search/filter pagination, CSV formula protection, review/assignment/audit, alert deduplication, scheduled report creation, cited research, reanalysis preservation, and mocked social collection. Browser checks use synthetic local data. CI contains both SQLite and PostgreSQL jobs; inspect the actual Actions run before claiming remote checks passed.
 
-## 6. Professional delivery
-Evidence-grounded research assistant, scheduled reports, audit logs, usage controls, optional billing, load testing, security review and production observability.
+## Remaining advanced roadmap
 
-Each milestone should have acceptance criteria, a working demonstration and appropriate tests before expanding scope.
+1. Evaluated multilingual transformer inference, semantic embeddings, calibrated confidence and language-specific evaluation datasets.
+2. Provider-approved integrations for additional social platforms, incremental synchronization and deletion propagation.
+3. Statistical anomaly/crisis detection, with historical precision/recall validation; existing alerts are explicit count thresholds.
+4. Generative research with verified evidence citations; the current assistant is extractive.
+5. Password recovery, SSO, retention/deletion administration, schema migration tooling and stronger production administration.
+6. Distributed workers/rate limiting, scalable analytical queries and dataset capacities beyond 5,000 posts.
+7. Optional billing, email notifications and public hosting if requested later.
+
+These are not represented as working features in the interface. The current delivery target is local/Docker, as selected by the project owner.

@@ -66,7 +66,7 @@ def make_handler(store):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', '8000'))
-    server = ThreadingHTTPServer(('127.0.0.1', port), make_handler(Store(ROOT / 'data' / 'social-ear.db')))
-    print(f'Social Ear: http://127.0.0.1:{port}', flush=True)
-    server.serve_forever()
+    # Keep the original launch command compatible without exposing the legacy API.
+    import uvicorn
+    from .api import create_app
+    uvicorn.run(create_app(), host=os.environ.get('HOST', '127.0.0.1'), port=int(os.environ.get('PORT', '8000')))

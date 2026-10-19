@@ -1,0 +1,8 @@
+fastapi==0.149.0
+uvicorn==0.54.0
+SQLAlchemy==2.1.5
+psycopg[binary]==3.3.6
+httpx==0.28.1
+scikit-learn==1.9.1
+vaderSentiment==3.3.2
+langdetect==1.0.9
