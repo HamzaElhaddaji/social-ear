@@ -36,15 +36,19 @@ def analyze(text):
     # VADER is English. Do not present unsupported languages as neutral predictions.
     if language not in ('en', 'und'):
         label, score = 'unclassified', None
+    from .sentiment_model import provider, predict
+    neural = predict(text, language) if provider() == 'onnx' else None
+    if neural:
+        label, score = neural['sentiment'], neural['score']
     intent = 'question' if '?' in text else 'complaint' if label == 'negative' else 'feedback'
     aspects = {}
     for key, terms in {'pricing': ('price', 'pricing', 'expensive', 'cheap'), 'support': ('support', 'service'), 'performance': ('slow', 'fast', 'crash', 'broken', 'outage'), 'usability': ('design', 'interface', 'dashboard', 'easy')}.items():
         clauses = [c for c in re.split(r'[.!?;]|\bbut\b', text.lower()) if any(t in c for t in terms)]
         if clauses:
             value = sentiment_score(' '.join(clauses))
-            aspects[key] = ('positive' if value >= .05 else 'negative' if value <= -.05 else 'neutral') if label != 'unclassified' else 'unclassified'
+            aspects[key] = ('positive' if value >= .05 else 'negative' if value <= -.05 else 'neutral') if language in ('en', 'und') and label != 'unclassified' else 'unclassified'
     return {'sentiment': label, 'score': score, 'language': language, 'intent': intent, 'aspects': aspects,
-            'model': 'vader-3.3.2-domain-v1', 'reviewed': False}
+            'model': 'vader-3.3.2-domain-v1', 'reviewed': False, **(neural or {})}
 
 
 def overview(posts):
@@ -76,7 +80,8 @@ def overview(posts):
     return {'total': len(posts), 'sentiment': {k: counts[k] for k in (*LABELS, 'unclassified')},
             'topics': sorted(topics, key=lambda t: -t['count']), 'timeline': sorted(days.values(), key=lambda x: x['date']),
             'sources': sorted(sources.values(), key=lambda x: -x['total']),
-            'method': 'VADER English sentiment · TF-IDF/K-means topic discovery · review estimates against original posts'}
+            'models': dict(Counter(p.get('model', 'unknown') for p in posts)),
+            'method': 'Stored sentiment estimates · TF-IDF/K-means topic discovery · review original posts'}
 
 
 def research(question, posts):

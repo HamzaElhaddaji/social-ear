@@ -80,6 +80,9 @@ def create_app(url=None, start_worker=True):
 
     @asynccontextmanager
     async def lifespan(app):
+        from .sentiment_model import provider, load_model
+        if provider() == 'onnx':
+            load_model()
         stop = threading.Event()
         thread = threading.Thread(target=worker, args=(factory, stop), daemon=True)
         app.state.worker_thread = thread
@@ -190,7 +193,8 @@ def create_app(url=None, start_worker=True):
         with factory() as db:
             user, session = identity(request, db)
             memberships = list(db.scalars(select(Membership).where(Membership.user_id == user.id)))
-            return {'name': user.name, 'email': user.email, 'csrf': session.csrf,
+            from .sentiment_model import status
+            return {'name': user.name, 'email': user.email, 'csrf': session.csrf, 'analysis': status(),
                     'workspaces': [{'id': m.workspace_id, 'name': db.get(Workspace, m.workspace_id).name, 'role': m.role} for m in memberships]}
 
     @app.post('/api/auth/logout')

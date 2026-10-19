@@ -12,7 +12,7 @@ The automated suite covers authentication/session logout, CSRF and host/origin c
 
 ## Remaining advanced roadmap
 
-1. Evaluated multilingual transformer inference, semantic embeddings, calibrated confidence and language-specific evaluation datasets.
+1. Multilingual transformer inference is implemented as an optional pinned local ONNX backend, with real inference smoke tests across five languages. Representative evaluation datasets, semantic embeddings and calibrated confidence remain future work.
 2. Provider-approved integrations for additional social platforms, incremental synchronization and deletion propagation.
 3. Statistical anomaly/crisis detection, with historical precision/recall validation; existing alerts are explicit count thresholds.
 4. Generative research with verified evidence citations; the current assistant is extractive.

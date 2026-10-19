@@ -44,7 +44,7 @@ Open http://localhost:8000. See [deployment instructions](docs/DEPLOYMENT.md) fo
 
 ## Analysis boundaries
 
-Sentiment uses VADER plus explicit domain rules, not a multilingual transformer. Non-English text is stored and searchable but remains unclassified automatically. Very short posts may have undetermined language. Scores are estimates, not confidence probabilities. Aspect and intent labels are heuristic. Topic clusters are statistical and may change with filters.
+Sentiment defaults to VADER plus explicit English domain rules. An optional, pinned local ONNX transformer supports eight languages; see [multilingual setup](docs/MULTILINGUAL.md). Unsupported languages remain unclassified. Very short posts may have undetermined language. Scores are estimates, not calibrated confidence. Aspect and intent labels remain heuristic. Topic clusters are statistical and may change with filters.
 
 The assistant retrieves related posts and computes a sentiment summary. It is not a generative chatbot and does not infer causes beyond the evidence. External AI services are not used. Bluesky collection has mocked test coverage and depends on provider availability; Instagram, X, Facebook and Reddit integrations are not included.
 
@@ -73,4 +73,4 @@ The original storage/handler modules remain for regression tests. The original l
 
 ## Scope
 
-This release targets local/single-server use. Run one API process because the worker, scheduler and authentication rate limiter assume one process. Dataset capacity is 5,000 posts per workspace; uploads are limited to 2 MB. There is no SSO, email password recovery, billing, retention automation, multilingual transformer, predictive crisis model or public hosted service. See [release status and next steps](docs/ROADMAP.md).
+This release targets local/single-server use. Run one API process because the worker, scheduler and authentication rate limiter assume one process. Dataset capacity is 5,000 posts per workspace; uploads are limited to 2 MB. There is no SSO, email password recovery, billing, retention automation, predictive crisis model or public hosted service. See [release status and next steps](docs/ROADMAP.md).

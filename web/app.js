@@ -19,6 +19,7 @@ const action = fn => async event => {event?.preventDefault(); try {await fn(even
 function showAuth() {$('auth').hidden = false; $('application').hidden = true; clearInterval(poll); csrf = '';}
 async function initialize() {
   const me = await api('/api/me'); csrf = me.csrf; $('auth').hidden = true; $('application').hidden = false; $('user-name').textContent = me.name;
+  $('analysis-status').textContent=me.analysis.description+' · Statistical topics · Human review. Existing records retain their original model until reanalyzed.';
   $('workspace').replaceChildren(...me.workspaces.map(w => {const o = el('option', w.name); o.value = w.id; o.dataset.role = w.role; return o;}));
   if (me.workspaces.some(w => w.id === workspace)) $('workspace').value = workspace;
   await changeWorkspace(); clearInterval(poll);
