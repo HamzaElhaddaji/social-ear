@@ -15,7 +15,7 @@ The automated suite covers authentication/session logout, CSRF and host/origin c
 1. Multilingual transformer inference is implemented as an optional pinned local ONNX backend, with real inference smoke tests across five languages. Representative evaluation datasets, semantic embeddings and calibrated confidence remain future work.
 2. Bluesky, Mastodon hashtags and YouTube video-comment connectors are implemented with explicit configuration and mocked test coverage. Provider-specific live access, incremental synchronization, additional platforms and deletion propagation remain future work.
 3. Statistical anomaly/crisis detection, with historical precision/recall validation; existing alerts are explicit count thresholds.
-4. Local generative research integration is implemented through Ollama, with structured-output and citation-ID validation tests. Live generation requires a separately installed local service/model. Semantic claim verification remains a research problem; citation IDs alone do not establish truth.
+4. Generative research supports local Ollama and hosted Groq, with structured-output and citation-ID validation tests. Groq has passed a live synthetic-evidence request. Local generation needs a separately installed model service; hosted generation needs a provider key and quota. Semantic claim verification remains a research problem; citation IDs alone do not establish truth.
 5. Password recovery, SSO, retention/deletion administration, schema migration tooling and stronger production administration.
 6. Distributed workers/rate limiting, scalable analytical queries and dataset capacities beyond 5,000 posts.
 7. Optional billing, email notifications and public hosting if requested later.

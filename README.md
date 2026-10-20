@@ -24,7 +24,7 @@ For a populated local demo, run `.venv/Scripts/python -m app.demo`. It creates o
 - English VADER sentiment with versioned product-support rules, language detection, aspect estimates, intent tagging
 - TF-IDF/K-means topic discovery, timeline charts, source comparisons and keyword-based brand comparisons
 - Search, sentiment/source/date filters, pagination, safe CSV export
-- Evidence research assistant with original-post citations and explicit extractive behavior
+- Evidence research assistant with original-post citations, extractive mode, local Ollama or hosted Groq generation
 - Human sentiment corrections, issue assignment, investigation status, team notes and audit history
 - Rolling 24-hour keyword/threshold monitors, deduplicated in-app alerts and acknowledgement
 - Saved JSON reports and recurring report schedules
@@ -46,7 +46,7 @@ Open http://localhost:8000. See [deployment instructions](docs/DEPLOYMENT.md) fo
 
 Sentiment defaults to VADER plus explicit English domain rules. An optional, pinned local ONNX transformer supports eight languages; see [multilingual setup](docs/MULTILINGUAL.md). Unsupported languages remain unclassified. Very short posts may have undetermined language. Scores are estimates, not calibrated confidence. Aspect and intent labels remain heuristic. Topic clusters are statistical and may change with filters.
 
-The assistant defaults to extractive research. Optional [local generative research](docs/GENERATIVE_RESEARCH.md) uses Ollama with structured claims and validated citation IDs; it requires a separately running local model service. Citation validation does not prove claims are true. No cloud AI service is used. [Social connectors](docs/SOCIAL_CONNECTORS.md) have mocked coverage and require provider access; YouTube requires a server API key. Instagram, X, Facebook and Reddit integrations are not included.
+The assistant defaults to extractive research. Optional [local generative research](docs/GENERATIVE_RESEARCH.md) uses Ollama; [hosted Groq research](docs/GROQ.md) works without a local language model. Hosted mode sends the question and up to five matching excerpts to Groq, as disclosed in the workspace. Citation validation does not prove claims are true. [Social connectors](docs/SOCIAL_CONNECTORS.md) require provider access; YouTube requires a server API key. Instagram, X, Facebook and Reddit integrations are not included.
 
 ## Verification
 

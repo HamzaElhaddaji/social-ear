@@ -26,7 +26,7 @@ The app listens at http://localhost:8000. PostgreSQL is not exposed to the host.
 
 Run one application process/replica. The durable queue, scheduler and authentication rate limiter currently assume a single process. A multi-process deployment requires an external worker queue and shared rate limiter first. Set `PUBLIC_ORIGIN=https://your-domain` and `ALLOWED_HOSTS=your-domain`. Terminate TLS at a reverse proxy, set `COOKIE_SECURE=1`, and route traffic to port 8000. Set `ALLOW_REGISTRATION=0` after enrolling your initial team if public registration is unwanted. There is no email verification, password reset email, or SSO yet.
 
-The app does not incur an AI API bill; language detection, VADER sentiment, and TF-IDF/K-means run locally. Dataset size is bounded to 5,000 posts per workspace. Imports are atomic and limited to 2 MB. Topic analysis is computed on filtered data; filters may produce different clusters.
+Language detection, sentiment and TF-IDF/K-means run locally. Optional [Groq research](GROQ.md) uses a hosted API and is subject to your provider plan and quota; it does not upgrade billing automatically. Dataset size is bounded to 5,000 posts per workspace. Imports are atomic and limited to 2 MB. Topic analysis is computed on filtered data; filters may produce different clusters.
 
 ## Public social collection
 
@@ -51,4 +51,4 @@ python -m unittest discover -s tests -v
 node --check web/app.js
 ```
 
-Tests cover authentication, workspace isolation, CSRF, role enforcement, atomic imports, duplicates, filters, review, alerts, scheduling, report evidence, and mocked collection/generation. Optional [multilingual inference](MULTILINGUAL.md) has real CPU smoke tests when its model is installed. Live generation requires Ollama and live YouTube collection requires a valid API key. Password recovery, retention/deletion workflows and billing are not implemented.
+Tests cover authentication, workspace isolation, CSRF, role enforcement, atomic imports, duplicates, filters, review, alerts, scheduling, report evidence, hosted-request redaction and mocked collection/generation. Optional [multilingual inference](MULTILINGUAL.md) has real CPU smoke tests when installed. Generation supports Ollama or a configured Groq API key; a live Groq synthetic-evidence test has passed. Live YouTube collection requires a valid API key. Password recovery, retention/deletion workflows and billing are not implemented.

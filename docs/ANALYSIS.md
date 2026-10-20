@@ -12,7 +12,7 @@ Aspects use matching clauses from a small product vocabulary. Intent uses questi
 
 Text is converted to sparse features with [scikit-learn TF-IDF](https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction). K-means groups filtered posts into up to five clusters; top-weight terms label each cluster. This is statistical topic discovery, not semantic understanding. English stop-word removal may be unsuitable for other languages.
 
-The research assistant ranks posts by TF-IDF cosine similarity to a question and returns up to five positive-relevance matches. Default extractive mode computes their sentiment counts. Optional [local generative mode](GENERATIVE_RESEARCH.md) sends only bounded retrieved excerpts to a configured local Ollama service and validates claim structure/citation IDs. No cloud AI service is involved. The relevance threshold is a retrieval heuristic, not a factual-confidence score.
+The research assistant ranks posts by TF-IDF cosine similarity to a question and returns up to five positive-relevance matches. Default extractive mode computes their sentiment counts. Optional generation sends bounded retrieved excerpts to either [local Ollama](GENERATIVE_RESEARCH.md) or explicitly configured [hosted Groq](GROQ.md), and validates claim structure/citation IDs. Hosted mode is disclosed in the interface. The relevance threshold is a retrieval heuristic, not a factual-confidence score.
 
 ## Monitoring
 

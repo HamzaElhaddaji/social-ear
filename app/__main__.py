@@ -1,5 +1,7 @@
 import os
 import uvicorn
+from .config import load_local_config
+load_local_config()
 from .api import create_app
 
 if __name__ == '__main__':

@@ -2,6 +2,8 @@
 
 Social Ear supports an optional local [Ollama chat API](https://docs.ollama.com/api/chat) provider using [structured JSON output](https://docs.ollama.com/capabilities/structured-outputs). The default remains extractive, so the application works without a language-model service.
 
+If you cannot install Ollama, use the [hosted Groq provider](GROQ.md) instead. It requires a server-side API key and sends bounded evidence excerpts to Groq.
+
 Install Ollama from its official distribution and install a local model that supports structured output, for example `ollama pull qwen2.5:1.5b`. Then run:
 
 ```powershell

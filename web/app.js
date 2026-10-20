@@ -20,7 +20,7 @@ function showAuth() {$('auth').hidden = false; $('application').hidden = true; c
 async function initialize() {
   const me = await api('/api/me'); csrf = me.csrf; $('auth').hidden = true; $('application').hidden = false; $('user-name').textContent = me.name;
   $('analysis-status').textContent=me.analysis.description+' · Statistical topics · Human review. Existing records retain their original model until reanalyzed.';
-  $('research-status').textContent=me.research.provider==='ollama'?'Local generative research with '+me.research.model+'. Answers cite retrieved posts. Check every claim against its evidence.':'Local extractive research: retrieves relevant posts and summarizes their sentiment. No generated explanations.';
+  $('research-status').textContent=me.research.provider==='groq'?'Hosted research via Groq ('+me.research.model+'). Your question and up to five matching post excerpts are sent to Groq when you ask. Check every generated claim against its cited evidence.':me.research.provider==='ollama'?'Local generative research with '+me.research.model+'. Answers cite retrieved posts. Check every claim against its evidence.':'Local extractive research: retrieves relevant posts and summarizes their sentiment. No generated explanations.';
   $('workspace').replaceChildren(...me.workspaces.map(w => {const o = el('option', w.name); o.value = w.id; o.dataset.role = w.role; return o;}));
   if (me.workspaces.some(w => w.id === workspace)) $('workspace').value = workspace;
   await changeWorkspace(); clearInterval(poll);
