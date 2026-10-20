@@ -74,3 +74,8 @@ The original storage/handler modules remain for regression tests. The original l
 ## Scope
 
 This release targets local/single-server use. Run one API process because the worker, scheduler and authentication rate limiter assume one process. Dataset capacity is 5,000 posts per workspace; uploads are limited to 2 MB. There is no SSO, email password recovery, billing, retention automation, predictive crisis model or public hosted service. See [release status and next steps](docs/ROADMAP.md).
+
+## Project presentation
+
+[Download the project overview PowerPoint](deliverables/Social-Ear-Project-Overview.pptx). The 18-slide deck explains the project, platform features, architecture, deployment, current limits and next steps, with screenshots of the synthetic demo workspace.
+
