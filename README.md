@@ -77,5 +77,5 @@ This release targets local/single-server use. Run one API process because the wo
 
 ## Project presentation
 
-[Download the project overview PowerPoint](deliverables/Social-Ear-Project-Overview.pptx). The 18-slide deck explains the project, platform features, architecture, deployment, current limits and next steps, with screenshots of the synthetic demo workspace.
+[Download the project overview PowerPoint](deliverables/Social-Ear-Project-Overview.pptx). The revised 16-slide deck presents a ten-minute research methodology: related work, three research questions, method comparisons, datasets, metrics, preliminary engineering measurements and expected contribution, with real platform screenshots. See the [research protocol and assignment criteria mapping](docs/RESEARCH_PROTOCOL.md).
 

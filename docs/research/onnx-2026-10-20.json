@@ -1,0 +1,10 @@
+{
+  "mode": "onnx",
+  "n": 30,
+  "batch_size": 1,
+  "cold_first_call_ms": 2009.63,
+  "median_ms": 8.24,
+  "p95_ms": 12.39,
+  "rss_MiB": 592.4,
+  "peak_rss_MiB": 761.8
+}
